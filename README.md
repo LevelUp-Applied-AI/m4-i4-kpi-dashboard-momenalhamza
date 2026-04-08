@@ -42,3 +42,7 @@ Design a KPI framework, compute metrics from the Amman Digital Market database, 
 This repository is provided for educational use only. See [LICENSE](LICENSE) for terms.
 
 You may clone and modify this repository for personal learning and practice, and reference code you wrote here in your professional portfolio. Redistribution outside this course is not permitted.
+
+## Interactive Dashboard
+
+Open `output/dashboard.html` in your browser to explore the interactive KPI dashboard.

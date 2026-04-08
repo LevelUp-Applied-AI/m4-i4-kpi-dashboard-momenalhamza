@@ -15,6 +15,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 from sqlalchemy import create_engine
+import plotly.express as px
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 
 
 KPI_KEYS = [
@@ -402,7 +405,137 @@ def create_visualizations(kpi_results, stat_results):
     plt.tight_layout()
     plt.savefig("output/revenue_heatmap.png", dpi=150)
     plt.close()
+def create_interactive_dashboard(kpi_results):
+    """Create an interactive Plotly dashboard and save it as HTML."""
+    os.makedirs("output", exist_ok=True)
 
+    monthly_revenue = kpi_results["monthly_revenue"].copy()
+    monthly_growth = kpi_results["monthly_revenue_growth_rate"].copy()
+    weekly_orders = kpi_results["weekly_order_volume"].copy()
+    revenue_by_city = kpi_results["revenue_by_city"].copy()
+    aov_by_category = kpi_results["average_order_value_by_category"].copy()
+
+    # Build a multi-panel interactive dashboard
+    fig = make_subplots(
+        rows=3,
+        cols=2,
+        subplot_titles=(
+            "Monthly Revenue",
+            "Monthly Revenue Growth Rate",
+            "Weekly Order Volume",
+            "Revenue by City",
+            "Average Order Value by Category",
+            "Top Cities by Average Order Value",
+        ),
+        specs=[
+            [{"type": "xy"}, {"type": "xy"}],
+            [{"type": "xy"}, {"type": "xy"}],
+            [{"type": "xy"}, {"type": "xy"}],
+        ],
+        vertical_spacing=0.12,
+        horizontal_spacing=0.10,
+    )
+
+    # 1) Monthly revenue
+    fig.add_trace(
+        go.Scatter(
+            x=monthly_revenue["order_month"],
+            y=monthly_revenue["revenue"],
+            mode="lines+markers",
+            name="Monthly Revenue",
+        ),
+        row=1,
+        col=1,
+    )
+
+    # 2) Monthly growth
+    fig.add_trace(
+        go.Scatter(
+            x=monthly_growth["order_month"],
+            y=monthly_growth["growth_rate_pct"],
+            mode="lines+markers",
+            name="MoM Growth %",
+        ),
+        row=1,
+        col=2,
+    )
+
+    # 3) Weekly order volume
+    fig.add_trace(
+        go.Scatter(
+            x=weekly_orders["order_week"],
+            y=weekly_orders["order_count"],
+            mode="lines+markers",
+            name="Weekly Orders",
+        ),
+        row=2,
+        col=1,
+    )
+
+    # 4) Revenue by city
+    fig.add_trace(
+        go.Bar(
+            x=revenue_by_city["city"],
+            y=revenue_by_city["total_revenue"],
+            name="Revenue by City",
+        ),
+        row=2,
+        col=2,
+    )
+
+    # 5) AOV by category
+    fig.add_trace(
+        go.Bar(
+            x=aov_by_category["category"],
+            y=aov_by_category["average_order_value"],
+            name="AOV by Category",
+        ),
+        row=3,
+        col=1,
+    )
+
+    # 6) Top cities by AOV
+    top_city_aov = revenue_by_city.sort_values(
+        "average_order_value", ascending=False
+    ).head(10)
+
+    fig.add_trace(
+        go.Bar(
+            x=top_city_aov["city"],
+            y=top_city_aov["average_order_value"],
+            name="City AOV",
+        ),
+        row=3,
+        col=2,
+    )
+
+    fig.update_layout(
+        title="Amman Digital Market — Interactive KPI Dashboard",
+        height=1200,
+        width=1200,
+        showlegend=False,
+        template="plotly_white",
+    )
+
+    fig.update_xaxes(title_text="Month", row=1, col=1)
+    fig.update_yaxes(title_text="Revenue", row=1, col=1)
+
+    fig.update_xaxes(title_text="Month", row=1, col=2)
+    fig.update_yaxes(title_text="Growth Rate (%)", row=1, col=2)
+
+    fig.update_xaxes(title_text="Week", row=2, col=1)
+    fig.update_yaxes(title_text="Order Count", row=2, col=1)
+
+    fig.update_xaxes(title_text="City", row=2, col=2)
+    fig.update_yaxes(title_text="Total Revenue", row=2, col=2)
+
+    fig.update_xaxes(title_text="Category", row=3, col=1)
+    fig.update_yaxes(title_text="Average Order Value", row=3, col=1)
+
+    fig.update_xaxes(title_text="City", row=3, col=2)
+    fig.update_yaxes(title_text="Average Order Value", row=3, col=2)
+
+    fig.write_html("output/dashboard.html", include_plotlyjs="cdn")
 
 def main():
     """Orchestrate the full analysis pipeline."""
@@ -413,6 +546,7 @@ def main():
     kpi_results = compute_kpis(data_dict)
     stat_results = run_statistical_tests(data_dict)
     create_visualizations(kpi_results, stat_results)
+    create_interactive_dashboard(kpi_results)
 
     print("\n=== KPI Summary ===")
     for key, value in kpi_results.items():
@@ -427,6 +561,8 @@ def main():
         print(f"\n{test_name}")
         for k, v in result.items():
             print(f"{k}: {v}")
+
+    print("\nInteractive dashboard saved to: output/dashboard.html")
 
 
 if __name__ == "__main__":
