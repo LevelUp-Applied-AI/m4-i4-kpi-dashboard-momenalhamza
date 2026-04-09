@@ -1,11 +1,11 @@
 # Executive Summary — Amman Digital Market Analytics
 
 ## Top Findings
+- The revenue saw a sudden decline in February, with a fall of 26.6%, followed by an upward trajectory for the months that came afterward.
+- Amman was the biggest revenue contributor, recording 31,438, beating all other cities, while a considerable amount of revenue, 15,109, was generated from unidentified regions. 
+- In terms of product types, there is a significant variation in consumer behavior: Books are at the forefront, registering the highest order value of approximately 140.9, while Sports has the lowest average order value of 55.4.
+- These results have been confirmed statistically through significance testing (p-value almost zero); however, Amman and Irbid’s difference is not statistically significant (p=0.52).
 
-1. Revenue dropped significantly by 26.6% in February compared to January before gradually recovering in the following months.
-2. Amman generated the highest revenue (31,438), outperforming all other cities, while a large portion of revenue (15,109) comes from unknown locations.
-3. Product categories show strong differences in customer spending, with Books having the highest average order value (~140.9) and Sports the lowest (~55.4).
-4. Statistical testing confirms that differences across product categories are significant (p-value ≈ 0), while no significant difference exists between Amman and Irbid (p = 0.52).
 
 ## Supporting Data
 
@@ -35,8 +35,7 @@
     - T-test (Amman vs Irbid): p = 0.52 → Not significant
 
 ## Recommendations
-
-1. Focus marketing and promotions on high-value categories such as Books and Electronics to maximize revenue impact.
-2. Improve customer data collection to reduce "Unknown" city values and enable more accurate geographic analysis.
-3. Investigate the cause of the February revenue drop to identify seasonal patterns or operational issues.
-4. Expand successful strategies used in Amman to other cities with growth potential.
+1) Market towards your high-value categories such as Books and Electronics for higher revenue generation.
+2) Work on improving data collection from customers to reduce the number of 'Unknown' cities and allow accurate geographical analysis.
+3) Examine the cause of lower revenues in February and find out whether the problem is seasonal or due to business issues.
+4) Apply successful business practices in Amman to other cities that show growth.
